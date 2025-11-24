@@ -11,12 +11,6 @@
     <script>
         function redirect(queryString) {
             const urlParams = new URLSearchParams(queryString);
-
-            const paramsObj = {};
-            urlParams.forEach((value, key) => {
-                paramsObj[key] = value;
-            });
-
             const antMonitorUrl = urlParams.get('state');
             
             if (!antMonitorUrl) {
@@ -24,6 +18,10 @@
                 return;
             }
 
+            const paramsObj = {};
+            urlParams.forEach((value, key) => {
+                paramsObj[key] = value;
+            });
             document.getElementById('params').textContent = 'Will be redirecting to ' + antMonitorUrl + 
                 'in 5 seconds! \nParams are \n' + JSON.stringify(paramsObj, null, 2);
 
