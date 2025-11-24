@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+</head>
+<body>
+    <h1>Current Query Parameters</h1>
+    <pre id="params">Loading...</pre>
+
+    <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        const paramsObj = {};
+        urlParams.forEach((value, key) => {
+            paramsObj[key] = value;
+        });
+
+        document.getElementById('params').textContent =
+            Object.keys(paramsObj).length ? JSON.stringify(paramsObj, null, 2) : "No query parameters found.";
+    </script>
+</body>
+</html>
