@@ -23,7 +23,7 @@
                 paramsObj[key] = value;
             });
             document.getElementById('params').textContent = 'Will be redirecting to ' + antMonitorUrl + 
-                'in 5 seconds! \nParams are \n' + JSON.stringify(paramsObj, null, 2);
+                ' in 5 seconds! \nParams are \n' + JSON.stringify(paramsObj, null, 2);
 
             setTimeout(function() {		  
                 urlParams.delete('state');
@@ -36,3 +36,4 @@
     </script>
 </body>
 </html>
+
