@@ -9,17 +9,32 @@
     <pre id="params">Loading...</pre>
 
     <script>
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
+        function redirect(queryString) {
+            const urlParams = new URLSearchParams(queryString);
 
-        const paramsObj = {};
-        urlParams.forEach((value, key) => {
-            paramsObj[key] = value;
-        });
+            const paramsObj = {};
+            urlParams.forEach((value, key) => {
+                paramsObj[key] = value;
+            });
 
-        document.getElementById('params').textContent =
-            Object.keys(paramsObj).length ? JSON.stringify(paramsObj, null, 2) : "No query parameters found.";
+            const antMonitorUrl = urlParams.get('state');
+            
+            if (!antMonitorUrl) {
+                document.getElementById('params').textContent = "Redirection URL is not found";
+                return;
+            }
+
+            document.getElementById('params').textContent = 'Will be redirecting to ' + antMonitorUrl + 
+                'in 5 seconds! \nParams are \n' + JSON.stringify(paramsObj, null, 2);
+
+            setTimeout(function() {		  
+                urlParams.delete('state');
+                const redirectUrl = `${decodeURIComponent(antMonitorUrl)}?${urlParams.toString()}`;
+                window.location.href = redirectUrl
+            }, 5000);
+        }
+
+        redirect(window.location.search);
     </script>
 </body>
 </html>
-
