@@ -3,15 +3,22 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline';" />
+    <meta id="csp" http-equiv="Content-Security-Policy" />
     <title>BlueBotics OAuth2 Redirection</title>
+    <script>
+        // Set CSP with dynamically generated nonce for security
+        const nonce = 'bb-' + Array.from(crypto.getRandomValues(
+            new Uint8Array(16)), byte => byte.toString(16).padStart(2, '0')).join('');
+        document.getElementById('csp').content = `default-src 'self'; script-src 'self' 'nonce-${nonce}';`;
+    </script>
 </head>
 
 <body>
-    <h1>BlueBotics</h1>
     <div id="status"></div>
     <script>
+        // Set the nonce attribute dynamically
+        document.currentScript.setAttribute('nonce', nonce);
+
         function handleRedirect() {
             const status = document.getElementById("status");
 
