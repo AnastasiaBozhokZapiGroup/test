@@ -1,39 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Test</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline';" />
+    <title>BlueBotics OAuth2 Redirection</title>
 </head>
+
 <body>
-    <h1>Current Query Parameters</h1>
-    <pre id="params">Loading...</pre>
-
+    <h1>BlueBotics</h1>
+    <div id="status"></div>
     <script>
-        function redirect(queryString) {
-            const urlParams = new URLSearchParams(queryString);
-            const antMonitorUrl = urlParams.get('state');
-            
-            if (!antMonitorUrl) {
-                document.getElementById('params').textContent = "Redirection URL is not found";
-                return;
+        function handleRedirect() {
+            const status = document.getElementById("status");
+
+            try {
+                status.textContent = "Processing OAuth2 redirection...";
+
+                const params = new URLSearchParams(location.search);
+                const state = params.get("state");
+
+                if (!state) {
+                    throw new Error("Missing state parameter");
+                }
+
+                const redirectUrl = decodeURIComponent(state);
+                // Validate URL
+                const url = new URL(redirectUrl);
+                if (!["http:", "https:"].includes(url.protocol)) {
+                    throw new Error("Invalid protocol");
+                }
+
+                params.delete("state");
+                location.href = `${redirectUrl}${redirectUrl.includes("?") ? "&" : "?"
+                    }${params}`;
+            } catch (error) {
+                console.error(error);
+                status.textContent = `Redirection failed: ${error.message}`;
             }
-
-            const paramsObj = {};
-            urlParams.forEach((value, key) => {
-                paramsObj[key] = value;
-            });
-            document.getElementById('params').textContent = 'Will be redirecting to ' + antMonitorUrl + 
-                ' in 5 seconds! \nParams are \n' + JSON.stringify(paramsObj, null, 2);
-
-            setTimeout(function() {		  
-                urlParams.delete('state');
-                const redirectUrl = `${decodeURIComponent(antMonitorUrl)}?${urlParams.toString()}`;
-                window.location.href = redirectUrl
-            }, 5000);
         }
-
-        redirect(window.location.search);
+        // Initialize
+        document.readyState === "loading"
+            ? document.addEventListener("DOMContentLoaded", handleRedirect)
+            : handleRedirect();
     </script>
 </body>
 </html>
-
